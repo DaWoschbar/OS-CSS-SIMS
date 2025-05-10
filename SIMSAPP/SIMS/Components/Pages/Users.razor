@@ -1,0 +1,68 @@
+﻿@page "/users"
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedSessionStorage ProtectedSessionStore
+@inject NavigationManager NavManager
+
+<PageTitle>Users</PageTitle>
+
+<h1>Users</h1>
+
+@if (userList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table" style="width: 600px">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>LastLogin</th>
+                <th>Active</th>
+                <th>Admin</th>
+                <th>Edit</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in userList)
+            {
+                <tr>
+                    <td>@item.Username</td>
+                    <td>@item.LastLogin</td>
+                    <td>@item.IsActive</td>
+                    <td>@item.IsAdmin</td>
+                    <td>
+                        <a href="/UserEdit?id=@item.User_id" class="btn btn-primary btn-sm">Edit</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a href="/UserEdit?id=0" class="btn btn-success btn-sm">Add new User</a>
+}
+
+
+@code {
+
+    private List<User>? userList = null;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            string token = (await ProtectedSessionStore.GetAsync<string>("token")).Value ?? "";
+            if (token == "")
+            {
+                NavManager.NavigateTo("/");
+            }
+            else
+            {
+                userList = new User().GetList();
+            }
+            StateHasChanged();
+        }
+    }
+}

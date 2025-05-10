@@ -1,0 +1,55 @@
+﻿@page "/useredit"
+@using Microsoft.AspNetCore.Http.Extensions
+@using Microsoft.AspNetCore.WebUtilities
+@rendermode InteractiveServer
+@attribute [StreamRendering]
+@inject NavigationManager NavManager
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedSessionStorage ProtectedSessionStore
+
+<PageTitle>Edit User</PageTitle>
+
+<h1>User</h1>
+
+<div style="max-width: 300px; margin-top:20px">
+    <div class="form-group" style="margin-bottom: 10px;">
+        <label for="title">Username:</label>
+        <input type="text" id="title" class="form-control" @bind-value="user.Username" />
+    </div>
+    <div class="form-group" style="margin-bottom: 10px; margin-top: 10px;">
+        <label for="closed">Admin:</label>
+        <input type="checkbox" id="closed" @bind="user.IsAdmin">
+    </div>
+    <div class="form-group" style="margin-bottom: 10px; margin-top: 10px;">
+        <label for="closed">Active:</label>
+        <input type="checkbox" id="closed" @bind="user.IsActive">
+    </div>
+    <hr />
+    <div class="form-group" style="margin-top: 10px;">
+        <button type="button" class="btn btn-success" @onclick="cmdSave_Clicked">Save incident</button>
+    </div>
+
+</div>
+
+
+@code {
+    private int id = 0;
+
+    User user = new User();
+
+    protected override void OnInitialized()
+    {
+        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("id", out var _id))
+        {
+            id = Convert.ToInt32(_id);
+            if (id > 0) user = new User(id);
+        }
+    }
+
+    private void cmdSave_Clicked()
+    {
+        user.Save();
+        NavManager.NavigateTo("users");
+    }
+}

@@ -1,0 +1,83 @@
+﻿@page "/incidents"
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedSessionStorage ProtectedSessionStore
+@inject NavigationManager NavManager
+
+<PageTitle>Incidents</PageTitle>
+
+<h1>Incidents</h1>
+
+@if (incidentList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Title</th>
+                <th>Reporter</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Edit</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in incidentList)
+            {
+                <tr>
+                    <td>@item.Reported_at.ToShortDateString()</td>
+                    <td>@item.Title</td>
+                    <td>@item.Reporter</td>
+                    <td>@typeToString(item.Incident_type)</td>
+                    <td>@item.Description</td>
+                    <td>
+                        <a href="/IncidentEdit?id=@item.Incident_id" class="btn btn-primary btn-sm">Edit</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a href="/IncidentEdit?id=0" class="btn btn-success btn-sm">Add new incident</a>
+}
+
+
+@code {
+
+    private List<Incident>? incidentList = null;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            string token = (await ProtectedSessionStore.GetAsync<string>("token")).Value ?? "";
+            if (token == "")
+            {
+                NavManager.NavigateTo("/");
+            }
+            else
+            {
+                incidentList = new Incident().GetList();
+            }
+            StateHasChanged();
+        }
+    }
+
+    private string typeToString(int typeId)
+    {
+        string result = typeId switch
+        {
+            1 => "Ticket",
+            2 => "Issue",
+            3 => "Informational",
+            4 => "Problem",
+            _ => throw new Exception("Oh ooh")
+        };
+        return result;
+    }
+}

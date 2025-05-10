@@ -1,0 +1,84 @@
+﻿@page "/"
+@using Newtonsoft.Json
+@using Newtonsoft.Json.Linq
+@using RestSharp
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedSessionStorage ProtectedSessionStore
+
+<PageTitle>Home</PageTitle>
+
+<h1>Welcome to SIMS!</h1>
+
+<p>@UserInfo</p>
+
+<button type="button" hidden="@(IsDisabled ? false : true)" class="btn btn-primary" @onclick="cmdLogout_Clicked">Logout</button>
+&nbsp;&nbsp;
+<a href="/Incidents" hidden="@(IsDisabled ? false : true)" class="btn btn-primary">Move to incident list</a>
+
+<div hidden="@IsDisabled" style="max-width: 500px; margin-top:20px">
+    <div class="login-box">
+        <h2>Login</h2>
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" class="form-control" @bind-value="Username" />
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" class="form-control" @bind-value="Password" />
+        </div>
+        <button type="button" class="btn btn-success" style="margin-top:20px" @onclick="cmdLogin_Clicked">Login</button>
+        <p class="text-danger">@ErrorInfo</p>
+    </div>
+</div>
+
+
+@code {
+    protected bool IsDisabled { get; set; }
+    public string Username { get; set; } = "";
+    public string Password { get; set; } = "";
+
+    private string UserInfo = "";
+    private string ErrorInfo = "";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            string username = (await ProtectedSessionStore.GetAsync<string>("username")).Value ?? "";
+            string token = (await ProtectedSessionStore.GetAsync<string>("token")).Value ?? "";
+            if (username != "" && token != "" && Helper.checkToken(username, token))
+            {
+                IsDisabled = true;
+                UserInfo = "Logged in as: " + username;
+            }
+            StateHasChanged();
+        }
+    }
+
+    private void cmdLogin_Clicked()
+    {
+        string token = Helper.getToken(Username, Password);
+        if (token != "")
+        {
+            ProtectedSessionStore.SetAsync("username", Username);
+            ProtectedSessionStore.SetAsync("token", token);
+            IsDisabled = true;
+            UserInfo = "Logged in as: " + Username;
+        }else
+        {
+            ErrorInfo = "Wrong data!";
+            Username = "";
+            Password = "";
+        }
+    }
+
+    private void cmdLogout_Clicked()
+    {
+        ProtectedSessionStore.SetAsync("username", "");
+        ProtectedSessionStore.SetAsync("token", "");
+        UserInfo = "";
+        IsDisabled = false;
+    }
+}
