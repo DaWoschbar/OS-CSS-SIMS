@@ -1,0 +1,43 @@
+# gerald.weinberger@fhstp.ac.at
+# 02.02.2024
+# docker compose up -d
+
+version: '3.8'
+name: simsdemo
+
+services:
+    simsdb1:
+        container_name: simsdb1
+        ports:
+            - 5432:5432
+        environment:
+            - POSTGRES_PASSWORD=1234
+            - POSTGRES_USER=postgresadmin
+            - POSTGRES_DB=db1
+        image: simsdb
+    redisdb1:
+        container_name: redisdb1
+        ports:
+            - 6379:6379
+        image: redis
+    simsapi1:
+        container_name: simsapi1
+        ports:
+            - 8888:8080
+        environment:
+            - redisdb=redisdb1
+            - postgresdb=Host=simsdb1;Username=postgresadmin;Password=1234;Database=db1
+        links:
+            - redisdb1
+        image: simsapi:latest
+    sims1:
+        container_name: sims1
+        ports:
+            - 8080:8080
+        environment:
+            - api=http://simsapi1:8080
+            - postgresdb=Host=simsdb1;Username=postgresadmin;Password=1234;Database=db1
+        links:
+            - simsdb1
+            - simsapi1
+        image: sims:latest
