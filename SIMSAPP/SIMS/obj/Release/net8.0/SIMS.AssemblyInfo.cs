@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SIMS")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+94d6876816b3cc4e5739a45e0347724c82175e0e")]
 [assembly: System.Reflection.AssemblyProductAttribute("SIMS")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SIMS")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

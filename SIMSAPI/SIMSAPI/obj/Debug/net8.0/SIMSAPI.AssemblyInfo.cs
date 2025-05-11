@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SIMSAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+94d6876816b3cc4e5739a45e0347724c82175e0e")]
 [assembly: System.Reflection.AssemblyProductAttribute("SIMSAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SIMSAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
