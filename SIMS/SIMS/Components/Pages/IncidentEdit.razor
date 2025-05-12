@@ -7,6 +7,7 @@
 @using Azure.ResourceManager.Compute;
 @using Azure.ResourceManager.Compute.Models;
 @using Azure.ResourceManager.Resources;
+@using Azure.ResourceManager.ContainerInstance;
 @rendermode InteractiveServer
 @attribute [StreamRendering]
 @inject NavigationManager NavManager
@@ -99,13 +100,9 @@
         try
         {
             HttpResponseMessage response = await client.PostAsync(functionUrl, null);
-            string resourceId = "/subscriptions/25b8b193-f48f-4ef7-be5c-0e97bf5c5737/resourceGroups/RG_OS_CCS/providers/Microsoft.ContainerInstance/containerGroups/testing-escalate-termination";
-            var credential = new DefaultAzureCredential();
-            var armClient = new ArmClient(credential);
-            var vmResource = armClient.GetVirtualMachineResource(new ResourceIdentifier(resourceId));
-            var operation = await vmResource.PowerOffAsync(waitUntil: Azure.WaitUntil.Completed);
+            Task<bool> termination = TerminateContainerGroupAsync();
 
-            if (response.IsSuccessStatusCode)
+            if (termination.Result)
             {
                 escalateMessage = "Escalation triggered successfully.";
             }
@@ -117,6 +114,26 @@
         catch (Exception ex)
         {
             escalateMessage = $"Error triggering escalation: {ex.Message}";
+        }
+    }
+
+    protected async Task<bool> TerminateContainerGroupAsync()
+    {
+        string resourceId = "/subscriptions/25b8b193-f48f-4ef7-be5c-0e97bf5c5737/resourceGroups/RG_OS_CCS/providers/Microsoft.ContainerInstance/containerGroups/testing-escalate-termination";
+
+        var credential = new DefaultAzureCredential();
+        var armClient = new ArmClient(credential);
+
+        var containerGroupResource = armClient.GetContainerGroupResource(new ResourceIdentifier(resourceId));
+
+        try
+        {
+            var operation = await containerGroupResource.DeleteAsync(Azure.WaitUntil.Completed);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            return false;
         }
     }
 }
