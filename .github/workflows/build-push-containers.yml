@@ -44,3 +44,15 @@ jobs:
           tags: ${{ secrets.ACR_LOGIN_SERVER }}/simsapi:${{ github.sha }}, ${{ secrets.ACR_LOGIN_SERVER }}/simsapi:latest
           cache-from: type=registry,ref=${{ secrets.ACR_LOGIN_SERVER }}/simsapi:buildcache
           cache-to: type=registry,ref=${{ secrets.ACR_LOGIN_SERVER }}/simsapi:buildcache,mode=max
+
+      #- name: Stop SIMSAPI container
+      #  run: az container stop --resource-group RG_OS_CCS --name simsapi
+
+      #- name: Start SIMSAPI container
+      #  run: az container start --resource-group RG_OS_CCS --name simsapi
+
+      #- name: Stop SIMS container
+      #  run: az container stop --resource-group RG_OS_CCS --name sims
+
+      #- name: Start SIMS container
+      #  run: az container start --resource-group RG_OS_CCS --name sims
