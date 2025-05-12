@@ -54,7 +54,7 @@
 
     Incident incident = new Incident();
     string[] incidenttypeArray { get; set; } = new[] { "Ticket", "Issue", "Informational", "Problem" };
-
+    private static readonly HttpClient client = new HttpClient();
     string escalateMessage = "";
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -83,8 +83,26 @@
         NavManager.NavigateTo("incidents");
     }
 
-    private void cmdEscalate_Clicked()
+    private async Task cmdEscalate_Clicked()
     {
-        escalateMessage = "Sorry, not implemented";
+        var functionUrl = "https://sendingsms.azurewebsites.net/api/sendSMS?";
+
+        try
+        {
+            HttpResponseMessage response = await client.PostAsync(functionUrl, null);
+
+            if (response.IsSuccessStatusCode)
+            {
+                escalateMessage = "Escalation triggered successfully.";
+            }
+            else
+            {
+                escalateMessage = $"Escalation failed: {response.StatusCode}";
+            }
+        }
+        catch (Exception ex)
+        {
+            escalateMessage = $"Error triggering escalation: {ex.Message}";
+        }
     }
 }
