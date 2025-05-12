@@ -1,6 +1,13 @@
 ﻿@page "/incidentedit"
 @using Microsoft.AspNetCore.Http.Extensions
 @using Microsoft.AspNetCore.WebUtilities
+@using Azure.Identity;
+@using Azure.Core;
+@using Azure.ResourceManager;
+@using Azure.ResourceManager.Compute;
+@using Azure.ResourceManager.Compute.Models;
+@using Azure.ResourceManager.Resources;
+@using Azure.ResourceManager.ContainerInstance;
 @rendermode InteractiveServer
 @attribute [StreamRendering]
 @inject NavigationManager NavManager
@@ -23,6 +30,10 @@
     <div class="form-group" style="margin-bottom: 10px;">
         <label for="description">Description:</label>
         <input type="text" id="description" class="form-control" @bind-value="incident.Description" />
+    </div>
+    <div class="form-group" style="margin-bottom: 10px;">
+        <label for="resource_id">Resource ID:</label>
+        <input type="text" id="resource_id" class="form-control" @bind-value="incident.Resource_id" />
     </div>
     <div class="form-group" style="margin-bottom: 10px;">
         <label for="incidenttype">Type:</label>
@@ -86,12 +97,12 @@
     private async Task cmdEscalate_Clicked()
     {
         var functionUrl = "https://sendingsms.azurewebsites.net/api/sendSMS?";
-
         try
         {
             HttpResponseMessage response = await client.PostAsync(functionUrl, null);
+            Task<bool> termination = TerminateContainerGroupAsync();
 
-            if (response.IsSuccessStatusCode)
+            if (termination.Result)
             {
                 escalateMessage = "Escalation triggered successfully.";
             }
@@ -103,6 +114,27 @@
         catch (Exception ex)
         {
             escalateMessage = $"Error triggering escalation: {ex.Message}";
+        }
+    }
+
+    protected async Task<bool> TerminateContainerGroupAsync()
+    {
+        string resourceId = incident.Resource_id;
+        string resourceString = $"/subscriptions/25b8b193-f48f-4ef7-be5c-0e97bf5c5737/resourceGroups/RG_OS_CCS/providers/Microsoft.ContainerInstance/containerGroups/{resourceId}";
+
+        var credential = new DefaultAzureCredential();
+        var armClient = new ArmClient(credential);
+
+        var containerGroupResource = armClient.GetContainerGroupResource(new ResourceIdentifier(resourceString));
+
+        try
+        {
+            var operation = await containerGroupResource.DeleteAsync(Azure.WaitUntil.Completed);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            return false;
         }
     }
 }
