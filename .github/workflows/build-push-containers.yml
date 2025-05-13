@@ -45,14 +45,16 @@ jobs:
           cache-from: type=registry,ref=${{ secrets.ACR_LOGIN_SERVER }}/simsapi:buildcache
           cache-to: type=registry,ref=${{ secrets.ACR_LOGIN_SERVER }}/simsapi:buildcache,mode=max
 
-      - name: Stop SIMSAPI container
-        run: az container stop --resource-group RG_OS_CCS --name simsapi
+      - name: Update and restart SIMS container
+        run: |
+            az container create \
+              --resource-group RG_OS_CCS \
+              --name simsapp \
+              --image osccsregistry.azurecr.io/sims:latest \
+              --restart-policy Always \
+              --location westeurope \
+              --registry-login-server osccsregistry.azurecr.io \
+              --registry-username ${{ secrets.ACR_USERNAME }} \
+              --registry-password ${{ secrets.ACR_PASSWORD }} \
+              --command-line "tail -f /dev/null"
 
-      - name: Stop SIMS container
-        run: az container stop --resource-group RG_OS_CCS --name sims
-
-      - name: Start SIMSAPI container
-        run: az container start --resource-group RG_OS_CCS --name simsapi
-
-      - name: Start SIMS container
-        run: az container start --resource-group RG_OS_CCS --name sims
