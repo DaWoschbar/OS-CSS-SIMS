@@ -42,3 +42,8 @@ jobs:
           context: ./SIMSAPI
           push: true
           tags: ${{ secrets.ACR_LOGIN_SERVER }}/simsapi:${{ github.sha }}, ${{ secrets.ACR_LOGIN_SERVER }}/simsapi:latest
+          cache-from: type=registry,ref=${{ secrets.ACR_LOGIN_SERVER }}/simsapi:buildcache
+          cache-to: type=registry,ref=${{ secrets.ACR_LOGIN_SERVER }}/simsapi:buildcache,mode=max
+
+
+
