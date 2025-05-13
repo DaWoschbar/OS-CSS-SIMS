@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35931.197 d17.13
+VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SendSMS", "SendSMS\SendSMS.csproj", "{22A3A5B6-9489-4FD7-907E-252C6947C861}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SIMS", "..\..\..\debug\simsdemo\SIMS\SIMS\SIMS.csproj", "{6349446A-4F55-E4FA-5E74-B65338C50F3A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SIMSAPI", "..\..\..\debug\simsdemo\SIMSAPI\SIMSAPI\SIMSAPI.csproj", "{328A75B1-AD71-1BC2-EAE6-04F98C28B6AF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{22A3A5B6-9489-4FD7-907E-252C6947C861}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22A3A5B6-9489-4FD7-907E-252C6947C861}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22A3A5B6-9489-4FD7-907E-252C6947C861}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6349446A-4F55-E4FA-5E74-B65338C50F3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6349446A-4F55-E4FA-5E74-B65338C50F3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6349446A-4F55-E4FA-5E74-B65338C50F3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6349446A-4F55-E4FA-5E74-B65338C50F3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{328A75B1-AD71-1BC2-EAE6-04F98C28B6AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{328A75B1-AD71-1BC2-EAE6-04F98C28B6AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{328A75B1-AD71-1BC2-EAE6-04F98C28B6AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{328A75B1-AD71-1BC2-EAE6-04F98C28B6AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
