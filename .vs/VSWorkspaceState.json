@@ -1,6 +1,10 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\Functions",
+    "\\Functions\\SendSMS",
+    "\\Functions\\SendSMS\\SendSMS"
   ],
+  "SelectedNode": "\\Functions\\SendSMS\\SendSMS\\Function1.cs",
   "PreviewInSolutionExplorer": false
 }
