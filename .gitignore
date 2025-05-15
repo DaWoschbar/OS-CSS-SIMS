@@ -240,3 +240,6 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+/SIMSAPI/SIMSAPI/obj/Debug/net8.0/SIMSAPI.AssemblyInfo.cs
+/SIMSAPI/SIMSAPI/obj/Debug/net8.0/SIMSAPI.AssemblyInfoInputs.cache
+/SIMSAPI/SIMSAPI/obj/Debug/net8.0/SIMSAPI.GeneratedMSBuildEditorConfig.editorconfig
