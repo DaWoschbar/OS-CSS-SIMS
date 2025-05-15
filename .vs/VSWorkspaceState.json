@@ -1,10 +1,16 @@
 {
   "ExpandedNodes": [
     "",
-    "\\Functions",
     "\\Functions\\SendSMS",
-    "\\Functions\\SendSMS\\SendSMS"
+    "\\Functions\\SendSMS\\SendSMS",
+    "\\SIMSAPI\\SIMSAPI",
+    "\\SIMSAPI\\SIMSAPI\\Properties",
+    "\\SIMS\\SIMS",
+    "\\SIMS\\SIMS\\BusinessLayer",
+    "\\SIMS\\SIMS\\Components",
+    "\\SIMS\\SIMS\\Components\\Layout",
+    "\\SIMS\\SIMS\\Components\\Pages"
   ],
-  "SelectedNode": "\\Functions\\SendSMS\\SendSMS\\Function1.cs",
+  "SelectedNode": "\\Functions",
   "PreviewInSolutionExplorer": false
 }

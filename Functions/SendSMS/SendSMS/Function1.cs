@@ -16,6 +16,10 @@ using Azure.ResourceManager.Compute.Models;
 using Azure.ResourceManager.Resources;
 using Azure.ResourceManager.ContainerInstance;
 using Azure.Security.KeyVault.Secrets;
+using System.Xml.Linq;
+using Microsoft.Azure.Management.Compute.Fluent;
+using Azure.Identity;
+using System.Net.Http;
 
 namespace SendSMS
 {
@@ -38,11 +42,18 @@ namespace SendSMS
             var client = new SecretClient(new Uri(KeyVaultUI), credential);
             var armClient = new ArmClient(credential);
 
-            if (!string.IsNullOrEmpty(resourceId))
+            try
             {
-                string resourceString = $"/subscriptions/25b8b193-f48f-4ef7-be5c-0e97bf5c5737/resourceGroups/RG_OS_CCS/providers/Microsoft.ContainerInstance/containerGroups/{resourceId}";
-                var containerGroupResource = armClient.GetContainerGroupResource(new ResourceIdentifier(resourceString));
-                var operation = containerGroupResource.DeleteAsync(Azure.WaitUntil.Completed);
+                if (!string.IsNullOrEmpty(resourceId))
+                {
+                    var containerGroupResourceId = ContainerGroupResource.CreateResourceIdentifier("25b8b193-f48f-4ef7-be5c-0e97bf5c5737", "RG_OS_CCS", resourceId);
+                    var containerGroup = armClient.GetContainerGroupResource(containerGroupResourceId);
+                    containerGroup.StopAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation(ex.Message);
             }
 
             // Retrieve the twilio SID
