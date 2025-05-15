@@ -7,7 +7,16 @@ using Twilio;
 using System;
 using System.Collections.Generic;
 using Twilio.Rest.Api.V2010.Account;
+using System.Net.NetworkInformation;
+using System.Resources;
+using Twilio.TwiML.Voice;
 using Azure.Identity;
+using Azure.Core;
+using Azure.ResourceManager;
+using Azure.ResourceManager.Compute;
+using Azure.ResourceManager.Compute.Models;
+using Azure.ResourceManager.Resources;
+using Azure.ResourceManager.ContainerInstance;
 using Azure.Security.KeyVault.Secrets;
 
 namespace SendSMS
@@ -24,9 +33,19 @@ namespace SendSMS
         [Function("sendSMS")]
         public IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequest req)
         {
-            // Create connection to azure key vault 
+            string resourceId = req.Query["resourceid"];
+
             var KeyVaultUI = "https://akv-os-ccs.vault.azure.net/";
-            var client = new SecretClient(new Uri(KeyVaultUI), new DefaultAzureCredential());
+            var credential = new DefaultAzureCredential();
+            var client = new SecretClient(new Uri(KeyVaultUI), credential);
+            var armClient = new ArmClient(credential);
+
+            if (!string.IsNullOrEmpty(resourceId))
+            {
+                string resourceString = $"/subscriptions/25b8b193-f48f-4ef7-be5c-0e97bf5c5737/resourceGroups/RG_OS_CCS/providers/Microsoft.ContainerInstance/containerGroups/{resourceId}";
+                var containerGroupResource = armClient.GetContainerGroupResource(new ResourceIdentifier(resourceString));
+                var operation = containerGroupResource.DeleteAsync(Azure.WaitUntil.Completed);
+            }
 
             // Retrieve the twilio SID
             KeyVaultSecret sid = client.GetSecret("TWILIOSID");
@@ -47,7 +66,7 @@ namespace SendSMS
 
             // Send from assigned source message
             messageOptions.From = new PhoneNumber("+18706148721");
-            messageOptions.Body = "Flo du Specht!";
+            messageOptions.Body = $"Die Ressource mit der id {resourceId} wurde terminiert!";
             var message = MessageResource.Create(messageOptions);
             Console.WriteLine(message.Body);
             
