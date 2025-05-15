@@ -38,3 +38,5 @@ docker run --name sims1 -p8080:8080 -e api=http://simsapi1:8080 -e postgresdb="H
 
 ## Architecture
 ![architecture-image](architecture.png "Title")
+
+i require professional help please
